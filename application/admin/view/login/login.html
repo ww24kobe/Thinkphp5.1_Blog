@@ -1,0 +1,68 @@
+<!doctype html>
+<html  class="x-admin-sm">
+<head>
+    
+    <link rel="stylesheet" href="/static/css/login.css">
+    {include file="common/header" /}
+	  
+</head>
+<body class="login-bg">
+    
+    <div class="login layui-anim layui-anim-up">
+        <div class="message">x-admin2.0-管理登录</div>
+        <div id="darkbannerwrap"></div>
+        
+        <form method="post" class="layui-form" >
+            <input name="username" placeholder="用户名"  type="text" lay-verify="required" class="layui-input" >
+            <hr class="hr15">
+            <input name="password" lay-verify="required" placeholder="密码"  type="password" class="layui-input">
+            <input name="captcha" lay-verify="required" placeholder="验证码"  type="text" class="layui-input">
+            <div>
+              <img src="{:captcha_src()}" onclick="changeCaptcha(this)" />
+            </div>
+            <!-- <div>{:captcha_img()}</div> -->
+            <hr class="hr15">
+            <input value="登录" lay-submit lay-filter="login" style="width:100%;" type="submit">
+            <hr class="hr20" >
+        </form>
+    </div>
+
+    <script>
+        $(function  () {
+            //layui使用其中的表单验证模块form
+            layui.use('form', function(){
+              var form = layui.form;
+              // console.log(form);
+              // layer.msg('玩命卖萌中', function(){
+              //   //关闭后的操作
+              //   });
+              //监听提交
+              form.on('submit(login)', function(data){
+                //data.field获取表单中的数据对象，{}
+                //只有验证全部通过之后，才会触发这里的函数
+                //ajax请求之前提示
+                var index = loading();
+                $.post("{:url('/admin/login')}",data.field,function(res){
+                  closeLoading(index); //关闭load提示
+                  if(res.code == 200){
+                    location.href = "{:url('/admin/index')}";
+                  }else{
+                    layer.msg(res.msg,{
+                      time:2000
+                    })
+                  }
+                },'json');
+                return false;
+              });
+            });
+        })
+
+
+        //单击更换验证码
+        function changeCaptcha(ele){
+          $(ele).attr('src',"{:captcha_src()}?_="+Math.random());
+        }
+    </script>
+   
+</body>
+</html>

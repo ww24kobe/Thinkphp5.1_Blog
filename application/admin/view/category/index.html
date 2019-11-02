@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html class="x-admin-sm">
+    <head>
+        {include file="common/header" /}
+    </head>
+    <body>
+        <div class="x-nav">
+          <span class="layui-breadcrumb">
+            <a href="">首页</a>
+            <a href="">演示</a>
+            <a>
+              <cite>导航元素</cite></a>
+          </span>
+          <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" onclick="location.reload()" title="刷新">
+            <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i></a>
+        </div>
+        <div class="layui-fluid">
+            <div class="layui-row layui-col-space15">
+                <div class="layui-col-md12">
+                    <div class="layui-card">
+                        <div class="layui-card-body ">
+                            <!-- <form class="layui-form layui-col-space5">
+                                <div class="layui-inline layui-show-xs-block">
+                                    <input class="layui-input"  autocomplete="off" placeholder="开始日" name="start" id="start">
+                                </div>
+                                <div class="layui-inline layui-show-xs-block">
+                                    <input class="layui-input"  autocomplete="off" placeholder="截止日" name="end" id="end">
+                                </div>
+                                <div class="layui-inline layui-show-xs-block">
+                                    <input type="text" name="username"  placeholder="请输入用户名" autocomplete="off" class="layui-input">
+                                </div>
+                                <div class="layui-inline layui-show-xs-block">
+                                    <button class="layui-btn"  lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>
+                                </div>
+                            </form> -->
+                        </div>
+                        <div class="layui-card-header">
+                           <!--  <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button> -->
+                            <button class="layui-btn" onclick="xadmin.open('添加分类','{:url(\'/admin/addCategory\')}',600,500)"><i class="layui-icon"></i>添加分类</button>
+                        </div>
+                        <div class="layui-card-body ">
+                            <table class="layui-table layui-form">
+                              <thead>
+                                <tr>
+                                  
+                                  <th>序号</th>
+                                  <th>分类名称</th>
+                                  <th>上级分类</th>
+                                  <th>介绍</th>
+                                  <th>创建时间</th>
+                                  <th>更新时间</th>
+                                  <th>操作</th>
+                              </thead>
+                              <tbody>
+                                {volist name='categorys' id='v'}
+                                <tr>
+                                  <td>{$key+1}</td>
+                                  <td>{:str_repeat('&nbsp;&nbsp;',$v['level']*2)}{$v['name']}</td>
+                                  <td>{$v['parent_name']?:'顶级分类'}</td>
+                                  <td>{$v['intro']}</td>
+                                  <td>{$v['create_time']}</td>
+                                  <td>{$v['update_time']}</td>
+                                  <td class="td-manage">
+                                    
+        <a title="编辑" class='layui-btn' onclick="xadmin.open('分类编辑','{:url(\'/admin/editcategory\',['id'=>$v['categoryid']])}')" href="javascript:;">
+                                      <i class="layui-icon layui-icon-edit"></i>  编辑
+                                    </a>
+                                    <a title="删除" class='layui-btn  layui-btn-danger' onclick="category_del(this,{$v['categoryid']})" href="javascript:;">
+                                      <i class="layui-icon">&#xe640;</i>删除
+                                    </a>
+                                  </td>
+                                </tr>
+                                {/volist}
+                              </tbody>
+                            </table>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </body>
+    <script>
+      layui.use(['laydate','form'], function(){
+        var laydate = layui.laydate;
+        var form = layui.form;
+        
+        //执行一个laydate实例
+        laydate.render({
+          elem: '#start' //指定元素
+        });
+
+        //执行一个laydate实例
+        laydate.render({
+          elem: '#end' //指定元素
+        });
+      });
+
+       
+
+      /*用户-删除*/
+      function category_del(obj,id){
+          layer.confirm('确认要删除吗？',function(index){
+              //发异步删除数据
+              var index = loading();
+              $.post("{:url('/admin/delcategory')}",{"id":id},function(res){
+                closeLoading(index);
+                if(res.code == 200){
+                  $(obj).parents("tr").remove();
+                }
+                layerMsg(res.msg);
+              },'json');
+             
+          });
+      }
+
+
+
+      function delAll (argument) {
+
+        var data = tableCheck.getData();
+  
+        layer.confirm('确认要删除吗？'+data,function(index){
+            //捉到所有被选中的，发异步进行删除
+            layer.msg('删除成功', {icon: 1});
+            $(".layui-form-checked").not('.header').parents('tr').remove();
+        });
+      }
+    </script>
+</html>

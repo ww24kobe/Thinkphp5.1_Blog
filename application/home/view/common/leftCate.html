@@ -1,0 +1,5 @@
+<ul class="list-group">
+    {volist name="categorys" id='v'}
+    <li class="list-group-item"><a href="{:url('/home/cate',['id'=>$v['categoryid']])}">{:str_repeat('&nbsp;&nbsp;',$v['level']*2)}{$v['name']}</a></li>
+    {/volist}
+</ul>
