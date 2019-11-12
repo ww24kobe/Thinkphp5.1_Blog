@@ -61,6 +61,12 @@ Route::group('/admin/',function(){
 });
 
 
+/**
+ * miss路由
+ * 没有定义的路由全部使用该路由
+ */
+Route::miss('home/index/index');
+
 
 //测试
 Route::get('/test','admin/test/test');
